@@ -68,7 +68,7 @@ QueryBuilder.defaults({
         ends_with:        function(v) { return { '$regex': Utils.escapeRegExp(v[0]) + '$' }; },
         not_ends_with: function(a) {
             return {
-                $not:'/(' + l.escapeRegExp(a[0]) + ')$/'
+                $not:'/(' + Utils.escapeRegExp(a[0]) + ')$/'
             };
         },
         is_empty:         function(v) { return ''; },
@@ -160,7 +160,7 @@ QueryBuilder.extend(/** @lends module:plugins.MongoDbSupport.prototype */ {
                 group.condition = self.settings.default_condition;
             }
             if (['AND', 'OR'].indexOf(group.condition.toUpperCase()) === -1) {
-                l.error('UndefinedMongoCondition', 'Unable to build MongoDB query with condition "{0}"', group.condition);
+                Utils.error('UndefinedMongoCondition', 'Unable to build MongoDB query with condition "{0}"', group.condition);
             }
 
             if (!group.rules) {
@@ -179,7 +179,7 @@ QueryBuilder.extend(/** @lends module:plugins.MongoDbSupport.prototype */ {
                     var values = [];
 
                     if (mdb === undefined) {
-                        l.error('UndefinedMongoOperator', 'Unknown MongoDB operation for operator "{0}"', rule.operator);
+                        Utils.error('UndefinedMongoOperator', 'Unknown MongoDB operation for operator "{0}"', rule.operator);
                     }
 
                     if (ope.nb_inputs !== 0) {
@@ -188,7 +188,7 @@ QueryBuilder.extend(/** @lends module:plugins.MongoDbSupport.prototype */ {
                         }
 
                         rule.value.forEach(function(v) {
-                            values.push(l.changeType(v, rule.type, false));
+                            values.push(Utils.changeType(v, rule.type, false));
                         });
                     }
 
@@ -254,7 +254,7 @@ QueryBuilder.extend(/** @lends module:plugins.MongoDbSupport.prototype */ {
 
         var key = andOr(data);
         if (!key) {
-            l.error('MongoParse', 'Invalid MongoDB query format');
+            Utils.error('MongoParse', 'Invalid MongoDB query format');
         }
 
         return (function parse(data, topKey) {
@@ -287,12 +287,12 @@ QueryBuilder.extend(/** @lends module:plugins.MongoDbSupport.prototype */ {
 
                     var operator = determineMongoOperator(value, field);
                     if (operator === undefined) {
-                        l.error('MongoParse', 'Invalid MongoDB query format');
+                        Utils.error('MongoParse', 'Invalid MongoDB query format');
                     }
 
                     var mdbrl = self.settings.mongoRuleOperators[operator];
                     if (mdbrl === undefined) {
-                        l.error('UndefinedMongoOperator', 'JSON Rule operation unknown for operator "{0}"', operator);
+                        Utils.error('UndefinedMongoOperator', 'JSON Rule operation unknown for operator "{0}"', operator);
                     }
 
                     var opVal = mdbrl.call(self, value);
