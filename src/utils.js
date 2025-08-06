@@ -136,7 +136,7 @@ Utils.changeType = function(value, type) {
             if (typeof value === 'string' && !/^(0|1|true|false){1}$/i.test(value)) {
                 return value;
             }
-            return value === true || value === 1 || value.toLowerCase() === 'true' || value === '1';
+            return value === true || value === 1 || String(value).toLowerCase() === 'true' || value === '1';
         default: return value;
         // @formatter:on
     }
